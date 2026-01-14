@@ -1,6 +1,7 @@
 #pragma once
 #include <chrono>
 #include <string>
+#include <ostream>
 enum class eLogSeverity { Debug, Info, Warning, Error, Fatal };
 
 class LogMessage {
@@ -26,6 +27,7 @@ public:
   const std::string& getText() const;
   eLogSeverity getSeverity() const;
   TimePoint getTimestamp() const;
-  
+  //String Formatter
+  friend std::ostream& operator<<(std::ostream& os,const LogMessage& msg);
   ~LogMessage() = default;
 };
