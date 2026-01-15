@@ -3,7 +3,7 @@
 #include <iomanip>
 LogMessage::LogMessage(std::string appName, std::string context,
                        eLogSeverity severity, std::string description,
-                       TimePoint timestamp = std::chrono::system_clock::now())
+                       TimePoint timestamp)
     : appName_(std::move(appName)), context_(std::move(context)),
       severity_(severity), description_(std::move(description)),
       timeStamp_(timestamp) 
@@ -27,6 +27,21 @@ LogMessage::TimePoint LogMessage::getTimestamp() const {
     return timeStamp_;
 }
 
+//Helper
+const char* severityToString(eLogSeverity s)
+{
+    switch (s)
+    {
+        case eLogSeverity::Debug:   return "DEBUG";
+        case eLogSeverity::Info:    return "INFO";
+        case eLogSeverity::Warning: return "WARNING";
+        case eLogSeverity::Error:   return "ERROR";
+        case eLogSeverity::Fatal:   return "FATAL";
+        default:                    return "UNKNOWN";
+    }
+}
+
+
 std::ostream& operator<<(std::ostream& os, const LogMessage& msg)
 {
     // Convert timestamp
@@ -43,16 +58,3 @@ std::ostream& operator<<(std::ostream& os, const LogMessage& msg)
     return os;
 }
 
-//Helper
-const char* severityToString(eLogSeverity s)
-{
-    switch (s)
-    {
-        case eLogSeverity::Debug:   return "DEBUG";
-        case eLogSeverity::Info:    return "INFO";
-        case eLogSeverity::Warning: return "WARNING";
-        case eLogSeverity::Error:   return "ERROR";
-        case eLogSeverity::Fatal:   return "FATAL";
-        default:                    return "UNKNOWN";
-    }
-}
