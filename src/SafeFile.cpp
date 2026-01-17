@@ -18,6 +18,7 @@ SafeFile::~SafeFile()
     if(fd_ >= 0)
     {
         close(fd_);
+        fd_=-1;
     }
 }
 SafeFile::SafeFile(SafeFile && other)
