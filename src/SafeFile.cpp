@@ -5,19 +5,11 @@
 #include <fcntl.h>
 #include "SafeFile.hpp"
 
-SafeFile::SafeFile(const std::string& filePath)
-{
-    fd_ = open(filePath.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
-    if(fd_ < 0)
-    {
-        throw std::runtime_error("Failed To open Log File !");
-    }
-}
 SafeFile::~SafeFile()
 {
     if(fd_ >= 0)
     {
-        close(fd_);
+        close();
         fd_=-1;
     }
 }
@@ -31,15 +23,60 @@ SafeFile& SafeFile::operator=(SafeFile && other)
     if(this != &other)
     {
         //Close my File First
-        close(fd_);
+        close();
 
         fd_ = other.fd_;
         other.fd_ = -1;
     }
     return *this;
 }
-void SafeFile::write(const std::string& message)
+bool SafeFile::open(const std::string& path) {
+    close(); // close any existing fd
+    fd_ = ::open(path.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
+    return fd_ != -1;
+}
+void SafeFile::close()
 {
-    ::write(fd_,message.c_str(),message.size()); // ::Access Global Scope Write rather than local one
-    ::write(fd_,"\n",1);
+    if(fd_ !=-1)
+    {
+        ::close(fd_);
+        fd_=-1;
+    }
+}
+bool SafeFile::write(const std::string& message)
+{
+    if (fd_ == -1) {
+        return false;
+    }
+
+    ssize_t written = ::write(fd_, message.c_str(), message.size());
+    if (written != static_cast<ssize_t>(message.size())) {
+        return false;
+    }
+
+    if (::write(fd_, "\n", 1) != 1) {
+        return false;
+    }
+
+    return true;
+}
+
+bool SafeFile::readLine(std::string& out)
+{
+    out.clear();
+    char ch;
+
+    while (true) {
+        ssize_t bytes = ::read(fd_,&ch, 1);
+
+        if (bytes <= 0) {
+            return !out.empty(); // allow last partial line
+        }
+
+        if (ch == '\n') {
+            return true;
+        }
+
+        out.push_back(ch);
+    }
 }

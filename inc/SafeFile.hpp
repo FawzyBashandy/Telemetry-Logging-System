@@ -5,8 +5,9 @@ class SafeFile final
 {
     private:
     int fd_{-1};
+    void close();
     public:
-    explicit SafeFile(const std::string& filePath);
+    SafeFile()=default;
     //Non-Copyable
     SafeFile(const SafeFile&) = delete;
     SafeFile& operator=(const SafeFile&)=delete;
@@ -15,6 +16,10 @@ class SafeFile final
     SafeFile& operator=(SafeFile&&);
 
     //APIs
-    void write(const std::string& message);
+    bool open(const std::string& filePath);
+
+    bool SafeFile::readLine(std::string& out);
+
+    bool write(const std::string& message);
     ~SafeFile();
 };
