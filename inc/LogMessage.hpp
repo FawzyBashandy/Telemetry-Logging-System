@@ -21,6 +21,13 @@ public:
              eLogSeverity severity,
              std::string description,
              TimePoint timestamp = std::chrono::system_clock::now());
+  
+  // Special Functions
+  LogMessage(const LogMessage&) = default;
+  LogMessage(LogMessage&&) = default;
+  LogMessage& operator=(const LogMessage&)=default;
+  LogMessage& operator=(LogMessage&&)=default;
+  
   // Getters (const-correct)
   const std::string& getAppName() const;
   const std::string& getContext() const;
