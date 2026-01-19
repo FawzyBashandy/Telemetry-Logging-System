@@ -3,9 +3,9 @@
 #include <unistd.h>
 #include <stdexcept>
 
-FileSink::FileSink(const std::string& path) : _sinkFile(path)
+FileSink::FileSink(const std::string& path)
 {
-
+    _sinkFile.open(path,FileMode::WriteAppend);
 }
 
 void FileSink::write(const std::string& message)
