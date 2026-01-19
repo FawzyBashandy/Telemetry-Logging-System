@@ -30,9 +30,12 @@ SafeFile& SafeFile::operator=(SafeFile && other)
     }
     return *this;
 }
-bool SafeFile::open(const std::string& path) {
+bool SafeFile::open(const std::string& path, FileMode mode) {
     close(); // close any existing fd
+    if(mode == FileMode::WriteAppend)
     fd_ = ::open(path.c_str(), O_WRONLY | O_CREAT | O_APPEND, 0644);
+    else
+    fd_ = ::open(path.c_str(), O_RDONLY);
     return fd_ != -1;
 }
 void SafeFile::close()
