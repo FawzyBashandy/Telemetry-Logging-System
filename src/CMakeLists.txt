@@ -4,6 +4,9 @@ add_library(TelemetryLogSystemLib ${LibraryType}
     FileSink.cpp
     LogManager.cpp
     LogMessage.cpp
+    FileTelemetrySource.cpp
+    SafeFile.cpp
+    SocketTelemetrySource.cpp
 )
 
 target_include_directories(TelemetryLogSystemLib PUBLIC ../inc)
